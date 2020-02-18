@@ -2,7 +2,7 @@
 
 Minimal and customizable react hook to make api calls
 
-#--- Work In Progress ---
+#--- Work In Progress. DO NOT USE YET ---
 
 ## API
 
