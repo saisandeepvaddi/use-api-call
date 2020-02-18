@@ -56,7 +56,6 @@ export function useApiCall(
           updateState(setData, responseData);
         }
       } catch (error) {
-        console.log("error:", error);
         updateState(setError, error);
       } finally {
         updateState(setLoading, false);
