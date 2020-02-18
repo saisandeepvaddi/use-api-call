@@ -9,7 +9,7 @@ Minimal and customizable react hook to make api calls
 - useApiCall(fn, [,options])
 
   - `fn` - Any function that returns `Promise` with data.
-    - Example: `useApiCall(() => fetch("/request/url/here"))`
+    - Example: `useApiCall(() => fetch("/request/url/here").then(res => res.json()))`
   - `options` - Options
 
     - ```ts
