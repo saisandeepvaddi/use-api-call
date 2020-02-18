@@ -1,26 +1,40 @@
-import React from 'react';
-import { useMountedState } from 'util-hooks';
+import React from "react";
+import { useMountedState } from "./util-hooks";
 
-interface IOptions {
-  updateIfMounted: boolean;
-  invokeOnRender: boolean;
+export interface IOptions {
+  updateOnlyIfMounted?: boolean;
+  invokeOnMount?: boolean;
 }
+
+export interface IApiCall {
+  data: any | undefined;
+  loading: boolean;
+  error: Error | undefined;
+  invoke: (args?: any) => void;
+}
+
+const defaultOptions: IOptions = {
+  updateOnlyIfMounted: true,
+  invokeOnMount: false,
+};
 
 export function useApiCall(
   request: any,
-  options: IOptions = {
-    updateIfMounted: true,
-    invokeOnRender: false,
-  }
-) {
+  options: IOptions = defaultOptions
+): IApiCall {
   const isMounted = useMountedState();
   const [loading, setLoading] = React.useState(false);
-  const [data, setData] = React.useState(null);
-  const [error, setError] = React.useState(null);
+  const [data, setData] = React.useState(undefined);
+  const [error, setError] = React.useState(undefined);
+
+  const _options = {
+    ...defaultOptions,
+    ...options,
+  };
 
   const updateState = React.useCallback(
     (updater, data) => {
-      if (options.updateIfMounted) {
+      if (_options.updateOnlyIfMounted) {
         if (isMounted()) {
           updater(data);
         }
@@ -31,23 +45,25 @@ export function useApiCall(
     [isMounted]
   );
 
-  const invoke = async (...args: any[]) => {
-    try {
-      updateState(setLoading, true);
-      let responseData = await request(...args);
-      if (responseData) {
-        updateState(setData, responseData);
+  const invoke = React.useCallback(() => {
+    (async (...args: any[]) => {
+      try {
+        updateState(setLoading, true);
+        let responseData = await request(...args);
+        if (responseData) {
+          updateState(setData, responseData);
+        }
+      } catch (error) {
+        console.log("error:", error);
+        updateState(setError, error);
+      } finally {
+        updateState(setLoading, false);
       }
-    } catch (error) {
-      console.log('error:', error);
-      updateState(setError, error);
-    } finally {
-      updateState(setLoading, false);
-    }
-  };
+    })();
+  }, [updateState, setLoading, setData, setError]);
 
   React.useEffect(() => {
-    if (options.invokeOnRender) {
+    if (_options.invokeOnMount) {
       invoke();
     }
   }, []);
