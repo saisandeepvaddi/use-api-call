@@ -51,7 +51,7 @@ test("should work with axios", async () => {
   expect(result.current.data).toEqual([{ name: "axios" }]);
 });
 
-test("should work with fetch with options", async () => {
+test("should work with string input with options", async () => {
   const { result, waitForValueToChange } = renderHook(() =>
     useApiCall("https://api.github.com/users")
   );
@@ -66,10 +66,10 @@ test("should work with fetch with options", async () => {
     timeout: 5000,
   });
 
-  expect(fetch.mock.calls[0][1]).toBe(args);
+  expect(fetch.mock.calls[fetch.mock.calls.length - 1][1]).toBe(args);
 });
 
-test("should work with axios with options", async () => {
+test("should work with axios callback with options", async () => {
   const { result, waitForValueToChange } = renderHook(() =>
     useApiCall((...args) =>
       axios
@@ -88,11 +88,10 @@ test("should work with axios with options", async () => {
     timeout: 5000,
   });
 
-  console.log("axios.get.mock.calls:", axios.get.mock.calls);
-  expect(axios.get.mock.calls[0][1]).toBe(args);
+  expect(axios.get.mock.calls[axios.get.mock.calls.length - 1][1]).toBe(args);
 });
 
-test.only("should work with fetch with options", async () => {
+test("should work with fetch callback with options", async () => {
   const { result, waitForValueToChange } = renderHook(() =>
     useApiCall((...args) =>
       fetch("https://api.github.com/users", ...args).then((res: any) =>
@@ -111,8 +110,7 @@ test.only("should work with fetch with options", async () => {
     timeout: 5000,
   });
 
-  console.log("fetch.mock.calls:", fetch.mock.calls);
-  expect(fetch.mock.calls[0][1]).toBe(args);
+  expect(fetch.mock.calls[fetch.mock.calls.length - 1][1]).toBe(args);
 });
 
 test("should work with auto invoke on mount", async () => {
@@ -155,7 +153,7 @@ test("should make request without any promise fn", async () => {
   expect(result.current.data).toEqual([{ name: "fetch" }]);
 });
 
-// test.only("should update error on request fail.", async () => {
+// test("should update error on request fail.", async () => {
 //   jest.setTimeout(10000);
 //   const { result, waitForValueToChange } = renderHook(() =>
 //     useApiCall(
