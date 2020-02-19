@@ -51,7 +51,7 @@ test("should work with axios", async () => {
   expect(result.current.data).toEqual([{ name: "axios" }]);
 });
 
-test.only("should work with fetch with options", async () => {
+test("should work with fetch with options", async () => {
   const { result, waitForValueToChange } = renderHook(() =>
     useApiCall("https://api.github.com/users")
   );
@@ -66,6 +66,52 @@ test.only("should work with fetch with options", async () => {
     timeout: 5000,
   });
 
+  expect(fetch.mock.calls[0][1]).toBe(args);
+});
+
+test("should work with axios with options", async () => {
+  const { result, waitForValueToChange } = renderHook(() =>
+    useApiCall((...args) =>
+      axios
+        .get("https://api.github.com/users", ...args)
+        .then((res: any) => res.data)
+    )
+  );
+
+  const args = { username: "sai" };
+
+  act(() => {
+    result.current.invoke(args);
+  });
+
+  await waitForValueToChange(() => result.current.data, {
+    timeout: 5000,
+  });
+
+  console.log("axios.get.mock.calls:", axios.get.mock.calls);
+  expect(axios.get.mock.calls[0][1]).toBe(args);
+});
+
+test.only("should work with fetch with options", async () => {
+  const { result, waitForValueToChange } = renderHook(() =>
+    useApiCall((...args) =>
+      fetch("https://api.github.com/users", ...args).then((res: any) =>
+        res.json()
+      )
+    )
+  );
+
+  const args = { username: "sai" };
+
+  act(() => {
+    result.current.invoke(args);
+  });
+
+  await waitForValueToChange(() => result.current.data, {
+    timeout: 5000,
+  });
+
+  console.log("fetch.mock.calls:", fetch.mock.calls);
   expect(fetch.mock.calls[0][1]).toBe(args);
 });
 
