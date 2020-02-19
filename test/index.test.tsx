@@ -51,6 +51,24 @@ test("should work with axios", async () => {
   expect(result.current.data).toEqual([{ name: "axios" }]);
 });
 
+test.only("should work with fetch with options", async () => {
+  const { result, waitForValueToChange } = renderHook(() =>
+    useApiCall("https://api.github.com/users")
+  );
+
+  const args = { username: "sai" };
+
+  act(() => {
+    result.current.invoke(args);
+  });
+
+  await waitForValueToChange(() => result.current.data, {
+    timeout: 5000,
+  });
+
+  expect(fetch.mock.calls[0][1]).toBe(args);
+});
+
 test("should work with auto invoke on mount", async () => {
   const { result, waitForValueToChange } = renderHook(() =>
     useApiCall(

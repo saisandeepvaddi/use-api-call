@@ -45,33 +45,38 @@ export function useApiCall(
     [isMounted]
   );
 
-  const invoke = React.useCallback(() => {
-    (async (...args: any[]) => {
-      try {
-        updateState(setLoading, true);
-        let responseData;
-        if (typeof request === "string") {
-          const res = await fetch(request, ...args).catch((e: Error) => {
-            throw e;
-          });
-          responseData = await res.json().catch((e: Error) => {
-            throw e;
-          });
-        } else {
-          responseData = await request(...args).catch((e: Error) => {
-            throw e;
-          });
+  const invoke = React.useCallback(
+    (...args: any[]) => {
+      const fetchData = async (...args: any[]) => {
+        try {
+          updateState(setLoading, true);
+          let responseData;
+          if (typeof request === "string") {
+            const res = await fetch(request, ...args).catch((e: Error) => {
+              throw e;
+            });
+            responseData = await res.json().catch((e: Error) => {
+              throw e;
+            });
+          } else {
+            responseData = await request(...args).catch((e: Error) => {
+              throw e;
+            });
+          }
+          if (responseData) {
+            updateState(setData, responseData);
+          }
+        } catch (error) {
+          updateState(setError, error);
+        } finally {
+          updateState(setLoading, false);
         }
-        if (responseData) {
-          updateState(setData, responseData);
-        }
-      } catch (error) {
-        updateState(setError, error);
-      } finally {
-        updateState(setLoading, false);
-      }
-    })();
-  }, [updateState, setLoading, setData, setError]);
+      };
+
+      fetchData(...args);
+    },
+    [updateState, setLoading, setData, setError]
+  );
 
   React.useEffect(() => {
     if (_options.invokeOnMount) {
