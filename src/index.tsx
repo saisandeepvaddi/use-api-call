@@ -19,7 +19,7 @@ const defaultOptions: IOptions = {
 };
 
 export function useApiCall(
-  request: (...args: any[]) => Promise<any>,
+  request: string | ((...args: any[]) => Promise<any>),
   options: IOptions = defaultOptions
 ): IApiCall {
   const isMounted = useMountedState();
@@ -49,9 +49,19 @@ export function useApiCall(
     (async (...args: any[]) => {
       try {
         updateState(setLoading, true);
-        let responseData = await request(...args).catch((e: Error) => {
-          throw e;
-        });
+        let responseData;
+        if (typeof request === "string") {
+          const res = await fetch(request, ...args).catch((e: Error) => {
+            throw e;
+          });
+          responseData = await res.json().catch((e: Error) => {
+            throw e;
+          });
+        } else {
+          responseData = await request(...args).catch((e: Error) => {
+            throw e;
+          });
+        }
         if (responseData) {
           updateState(setData, responseData);
         }

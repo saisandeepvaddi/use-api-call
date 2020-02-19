@@ -4,9 +4,7 @@ import * as ReactDOM from "react-dom";
 import { useApiCall } from "../dist";
 
 const App = () => {
-  const { data, invoke, loading } = useApiCall(() =>
-    fetch("https://api.github.com/users").then((res: any) => res.json())
-  );
+  const { data, invoke, loading } = useApiCall("https://api.github.com/users");
 
   if (loading) {
     return <div>Loading...</div>;
