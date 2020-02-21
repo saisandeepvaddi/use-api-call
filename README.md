@@ -8,33 +8,80 @@ Minimal and customizable react hook to make api calls
 
 #--- Work In Progress. DO NOT USE YET ---
 
+## Installation
+
+> npm install use-api-call
+> 
+> yarn add use-api-call
+
+## Usage
+
+```jsx
+// See examples on adavanced usage.
+
+import React from "react";
+import { useApiCall } from "use-api-call";
+
+function App() {
+  const {data, error, loading, invoke} = useApiCall("https://api.github.com/users");
+
+  React.useEffect(() => {
+    invoke(); // You don't have to call invoke() if you pass option {invokeOnMount: true} to useApiCall()'s second argument. But, isn't it nice to have control when you trigger ajax call.
+  }, []);
+
+  if(loading) return <p>Loading...</p>
+
+  return <div>{data}</div>;
+
+}
+
+```
+
 ## API
 
-- useApiCall(fn, [,options])
+- **useApiCall(request, [,options])**
 
-  - `fn` - Any function that returns `Promise` with data.
-    - Example: `useApiCall(() => fetch("/request/url/here").then(res => res.json()))`
-  - `options` - Options
+  - `request` - Function | URL string - Any function that returns `Promise` with data (or) A api url that returns JSON. (See the examples section).
+    - Example: `useApiCall(() => axios("/request/url/here").then(res => res.data))`
+  - `options` - Object - Options object.
 
-    - ```ts
-      interface IOptions {
-        // data, error, loading will not be updated if component unmounted. Prevents "Can't perform a React state update on an unmounted component" warning.
-        updateOnlyIfMounted?: boolean; // default true
-        // Automatically invoke api call on mount.
-        // useEffect(() => {...here}, [])
-        invokeOnMount?: boolean; // default false
-      }
-      ```
+  - returns an object with {data, error, loading, invoke} values. See the [Returns](#Returns) section for details.
 
-  - returns object with following structure
-    - ```ts
-      interface IApiCall {
-        data: any | undefined;
-        loading: boolean;
-        error: Error | undefined;
-        invoke: (args?: any) => void;
-      }
-      ```
+### Options
+
+- updateOnlyIfMounted
+
+  - Will update the data, error, loading values only if component is still mounted. Prevents "Can't perform a React state update on an unmounted component" warning.
+  - Type: _Boolean_
+  - **Default**: `true`
+
+- invokeOnMount
+  - Runs ajax request when the component is mounted automatically. Basically, `useEffect(() => {...here}, [])`
+  - Type: _Boolean_
+  - **Default**: `false`
+
+### Returns
+
+- data
+
+  - Whatever is returned by your ajax call on success.
+  - Type: _any_
+  - **Default**: `undefined`
+
+- loading
+
+  - A loader indicating whether request is running. You don't have to change anything here.
+  - Type: _Boolean_
+
+- error
+
+  - Error thrown by the request unmodified. i.e., Axios and fetch return different _Error_ object structure, you'll have to check their documentation.
+  - Type: _Error_
+  - **Default**: Error returned by the `fn` option passed to `useApiCall`.
+
+- invoke
+  - A function which you'll call to run the ajax call.
+  - Type: _Function_
 
 ## Examples
 
@@ -65,6 +112,28 @@ const App = () => {
 const App = () => {
   const { data, error, invoke, loading } = useApiCall(
     () => fetch("https://api.github.com/users").then((res: any) => res.json()),
+    {
+      invokeOnMount: true,
+    }
+  );
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+};
+```
+
+```jsx
+// Without ajax library. Uses fetch by default. You might have to polyfill for wide browser support.
+const App = () => {
+  const { data, error, invoke, loading } = useApiCall(
+    "https://api.github.com/users",
     {
       invokeOnMount: true,
     }
