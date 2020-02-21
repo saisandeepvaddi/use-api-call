@@ -1,10 +1,10 @@
 # use-api-call
 
+Minimal react hook to make api calls.
+
 <p>
   <a href="https://badgen.net/bundlephobia/minzip/use-api-call@latest"><img src="https://badgen.net/bundlephobia/minzip/use-api-call@latest" /></a>
 </p>
-
-Minimal react hook to make api calls.
 
 ## Installation
 
