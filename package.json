@@ -34,7 +34,11 @@
     }
   },
   "name": "use-api-call",
-  "author": "Sai",
+  "author": "Sai Sandeep Vaddi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saisandeepvaddi/use-api-call"
+  },
   "module": "dist/use-api-call.esm.js",
   "devDependencies": {
     "@testing-library/react-hooks": "^3.2.1",
