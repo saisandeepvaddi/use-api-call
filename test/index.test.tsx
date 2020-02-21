@@ -13,6 +13,11 @@ const axios = {
       data: [{ name: "axios" }],
     })
   ),
+  getErr: jest.fn().mockImplementation(() =>
+    Promise.reject({
+      data: [{ name: "axios-error" }],
+    })
+  ),
 };
 
 test("should work with fetch", async () => {
@@ -153,18 +158,19 @@ test("should make request without any promise fn", async () => {
   expect(result.current.data).toEqual([{ name: "fetch" }]);
 });
 
-// test("should update error on request fail.", async () => {
-//   jest.setTimeout(10000);
-//   const { result, waitForValueToChange } = renderHook(() =>
-//     useApiCall(
-//       () =>
-//         axios.get("https://asdfasdf.github.com").then((res: any) => res.data),
-//       {
-//         invokeOnMount: true,
-//       }
-//     )
-//   );
+test("should update error on request fail.", async () => {
+  const { result, waitForValueToChange } = renderHook(() =>
+    useApiCall(
+      () =>
+        axios
+          .getErr("https://asdfasdf.github.com")
+          .then((res: any) => res.data),
+      {
+        invokeOnMount: true,
+      }
+    )
+  );
 
-//   await waitForValueToChange(() => result.current.error);
-//   expect(result.current.error).not.toBeNull();
-// });
+  await waitForValueToChange(() => result.current.error);
+  expect(result.current.error).not.toEqual([{ name: "axios-error" }]);
+});
