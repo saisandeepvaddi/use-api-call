@@ -39,7 +39,7 @@ function App() {
 
 - **useApiCall(request, [,options])**
 
-  - `request` - Function | URL string - Any function that returns `Promise` with data (or) A api url that returns JSON. (See the examples section).
+  - `request` - Function | URL string - Any function that returns `Promise` with data (or) A api url that returns JSON (uses fetch by default). (See the examples section).
     - Example: `useApiCall(() => axios("/request/url/here").then(res => res.data))`
   - `options` - Object - Options object.
 
@@ -54,7 +54,7 @@ function App() {
   - **Default**: `true`
 
 - invokeOnMount
-  - Runs ajax request when the component is mounted automatically. Basically, `useEffect(() => {...here}, [])`
+  - Runs ajax request when the component is mounted automatically. Basically, it does `useEffect(() => { invoke(); }, [])`.
   - Type: _Boolean_
   - **Default**: `false`
 
@@ -83,7 +83,7 @@ function App() {
 
 ## Examples
 
-Examples can be found in [examples](/example) folder.
+Check [test/index.test.tsx](test/index.test.tsx) for all different examples. I'll update some React examples soon.
 
 ```jsx
 // Manual invoke
