@@ -42,7 +42,7 @@ export function useApiCall(
         updater(data);
       }
     },
-    [isMounted]
+    [isMounted, _options.updateOnlyIfMounted]
   );
 
   const invoke = React.useCallback(
@@ -75,13 +75,14 @@ export function useApiCall(
 
       fetchData(...args);
     },
-    [updateState, setLoading, setData, setError]
+    [updateState, setLoading, setData, setError, request]
   );
 
   React.useEffect(() => {
     if (_options.invokeOnMount) {
       invoke();
     }
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
 
   return {
