@@ -1,5 +1,9 @@
 # use-api-call
 
+<p>
+  <a href="https://badgen.net/bundlephobia/minzip/use-api-call@0.1.1"><img src="https://badgen.net/bundlephobia/minzip/use-api-call@0.1.1" /></a>
+</p>
+
 Minimal and customizable react hook to make api calls
 
 #--- Work In Progress. DO NOT USE YET ---
