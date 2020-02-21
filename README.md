@@ -4,14 +4,12 @@
   <a href="https://badgen.net/bundlephobia/minzip/use-api-call"><img src="https://badgen.net/bundlephobia/minzip/use-api-call" /></a>
 </p>
 
-Minimal and customizable react hook to make api calls
-
-#--- Work In Progress. DO NOT USE YET ---
+Minimal react hook to make api calls.
 
 ## Installation
 
 > npm install use-api-call
-> 
+>
 > yarn add use-api-call
 
 ## Usage
@@ -23,18 +21,18 @@ import React from "react";
 import { useApiCall } from "use-api-call";
 
 function App() {
-  const {data, error, loading, invoke} = useApiCall("https://api.github.com/users");
+  const { data, error, loading, invoke } = useApiCall(
+    "https://api.github.com/users"
+  );
 
   React.useEffect(() => {
     invoke(); // You don't have to call invoke() if you pass option {invokeOnMount: true} to useApiCall()'s second argument. But, isn't it nice to have control when you trigger ajax call.
   }, []);
 
-  if(loading) return <p>Loading...</p>
+  if (loading) return <p>Loading...</p>;
 
   return <div>{data}</div>;
-
 }
-
 ```
 
 ## API
