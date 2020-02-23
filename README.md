@@ -75,10 +75,10 @@ function App() {
 
   - Error thrown by the request unmodified. i.e., Axios and fetch return different _Error_ object structure, you'll have to check their documentation.
   - Type: _Error_
-  - **Default**: Error returned by the `fn` option passed to `useApiCall`.
+  - **Default**: `undefined`
 
 - invoke
-  - A function which you'll call to run the ajax call.
+  - A function which you'll call to run the ajax call. Invoke can take options that you normally send with your fetch or axios call. If you have passed your own function instead of passing URL string, You have to allow your function to take arguments. Please check the examples section to see how.
   - Type: _Function_
 
 ## Examples
@@ -143,6 +143,26 @@ const App = () => {
 
   return (
     <div>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+};
+```
+
+```jsx
+// Pass arguments to axios.
+const App = () => {
+  const { data, error, invoke, loading } = useApiCall(
+    (...args) => axios.get("https://api.github.com/users", ...args).then(res => res.data)
+  );
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <button onClick={() => invoke({headers: {Authorization: "Bearer 12345xcxcxc"}})}>Get Users</button>
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>
   );
