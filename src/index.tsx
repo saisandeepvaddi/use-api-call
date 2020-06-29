@@ -45,8 +45,15 @@ export function useApiCall(
     [isMounted, _options.updateOnlyIfMounted]
   );
 
+  const resetState = React.useCallback(() => {
+    setLoading(false);
+    setData(undefined);
+    setError(undefined);
+  }, []);
+
   const invoke = React.useCallback(
     (...args: any[]) => {
+      resetState();
       const fetchData = async (...args: any[]) => {
         try {
           updateState(setLoading, true);
